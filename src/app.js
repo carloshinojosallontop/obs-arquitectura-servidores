@@ -4,7 +4,6 @@ import {
   getEmployees,
   getEmployeesByPage,
   getEmployeesByPrivilege,
-  validateEmployee,
   addEmployee,
   getEmployeesByBadge,
   getEmployeeByName,
@@ -32,7 +31,7 @@ app.get("/api/employees", (req, res) => {
 app.get("/api/employees/oldest", (req, res) => {
   const oldest = getOldestEmployee();
   if (!oldest) {
-    return res.status(404).json({ error: "No employees found" });
+    return res.status(404).json({ code: "not_found" });
   }
   res.json(oldest);
 });
@@ -43,11 +42,44 @@ app.get("/api/employees/:name", (req, res) => {
   res.json(emp);
 });
 
-app.post("/api/employees", (req, res) => {
-  const { valid } = validateEmployee(req.body);
-  if (!valid) return res.status(400).json({ code: "bad_request" });
-  const created = addEmployee(req.body);
-  res.status(201).json(created);
+app.post("/api/employees", (req, res, next) => {
+  try {
+    const created = addEmployee(req.body);
+    res.status(201).json(created);
+  } catch (err) {
+    if (err?.status === 400) {
+      return res.status(400).json({ code: "bad_request" });
+    }
+    next(err);
+  }
+});
+
+app.use((req, res) => {
+  res.status(404).json({ code: "not_found" });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  // JSON inválido al parsear body
+  if (err?.type === "entity.parse.failed") {
+    return res
+      .status(400)
+      .json({ code: "bad_request", detail: "invalid_json" });
+  }
+
+  const status = Number.isInteger(err?.status)
+    ? err.status
+    : Number.isInteger(err?.statusCode)
+    ? err.statusCode
+    : 500;
+
+  const payload =
+    status >= 500
+      ? { code: "internal_error" }
+      : { code: "error", message: err?.message ?? undefined };
+
+  return res.status(status).json(payload);
 });
 
 export default app;
