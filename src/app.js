@@ -21,7 +21,17 @@ app.get("/api/employees", (req, res) => {
     typeof req.query.badges === "string" ? req.query.badges.trim() : "";
 
   if (wantsUserOnly) return res.json(getEmployeesByPrivilege("user"));
-  if (badge) return res.json(getEmployeesByBadge(badge));
+  if (badge) {
+    const list = getEmployeesByBadge(badge);
+
+    if (list.length === 0) {
+      return res.status(404).json({
+        code: "not_found",
+        message: `No se encontraron empleados con el badge "${badge}".`,
+      });
+    }
+    return res.json(list);
+  }
   if (Number.isInteger(page) && page > 0)
     return res.json(getEmployeesByPage(page));
 
