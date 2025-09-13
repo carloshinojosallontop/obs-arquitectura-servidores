@@ -1,16 +1,20 @@
 {
   "name": "project_node_server",
   "version": "1.0.0",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "start:db": "docker run --name db_posts -p 27017:27017 -d mongo",
+    "stop:db": "docker stop db_posts && docker rm db_posts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mongoose": "^8.18.1"
   }
 }
