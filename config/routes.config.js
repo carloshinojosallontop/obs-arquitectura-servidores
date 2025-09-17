@@ -13,7 +13,9 @@ router.patch("/posts/:id", posts.update);
 router.delete("/posts/:id", posts.remove);
 
 router.post("/users", users.create);
+
 router.post("/login", users.login);
+
 router.post("/logout", session.check, users.logout);
 
 export default router;

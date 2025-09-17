@@ -42,7 +42,7 @@ const logout = async (req, res) => {
     await Session.findByIdAndDelete(sessionId);
   }
   res.clearCookie("session"); // Eliminar la cookie de sesión
-  res.status(204).json({ message: "Sesión cerrada" });
+  res.status(200).json({ message: "Sesión cerrada" });
 };
 
 export default { create, login, logout };
