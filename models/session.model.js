@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 const sessionSchema = new mongoose.Schema(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: mongoose.Schema.Types.ObjectId, // ID del usuario
+      ref: "User", // Referencia al modelo User
       required: true,
     },
   },
@@ -12,9 +12,9 @@ const sessionSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: {
       transform: (doc, ret) => {
-        ret.id = doc.id;
+        ret.id = doc.id; 
         delete ret._id;
-        delete ret.__v;
+        delete ret.__v; 
         return ret;
       },
     },

@@ -1,8 +1,9 @@
 import User from "../models/user.model.js";
 import HttpError from "../models/error.model.js";
-import bcrypt from "bcrypt";
 import Session from "../models/session.model.js";
+import bcrypt from "bcrypt";
 
+// Controlador para crear un nuevo usuario
 const create = async (req, res, next) => {
   const existingUser = await User.findOne({ email: req.body.email });
   if (existingUser) {
@@ -15,6 +16,7 @@ const create = async (req, res, next) => {
   return res.status(201).json(user);
 };
 
+// Controlador para iniciar sesión
 const login = async (req, res, next) => {
   const { email, password } = req.body || {};
   if (!email || !password) {
@@ -33,12 +35,13 @@ const login = async (req, res, next) => {
   return res.status(200).json({ user, session });
 };
 
+// Controlador para cerrar sesión
 const logout = async (req, res) => {
-  const sessionId = req.cookies?.session; //
+  const sessionId = req.cookies?.session; // Obtener el ID de sesión de las cookies
   if (sessionId) {
     await Session.findByIdAndDelete(sessionId);
   }
-  res.clearCookie("session"); //
+  res.clearCookie("session"); // Eliminar la cookie de sesión
   res.status(204).json({ message: "Sesión cerrada" });
 };
 

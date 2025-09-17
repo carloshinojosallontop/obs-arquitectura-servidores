@@ -1,11 +1,9 @@
 import express from "express";
-import router from "./config/routes.config.js";
-import "./config/db.config.js";
 import mongoose from "mongoose";
-import HttpError from "./models/error.model.js";
 import cookieParser from "cookie-parser";
-
-
+import router from "./config/routes.config.js";
+import HttpError from "./models/error.model.js";
+import "./config/db.config.js";
 
 const app = express();
 
@@ -13,7 +11,6 @@ const PORT = process.env.PORT || 8000;
 
 // Middlewares
 app.use(cookieParser());
-
 app.use(express.json());
 
 // Routes
@@ -21,7 +18,7 @@ app.use("/api", router);
 
 // Error handling middleware
 app.use((error, req, res, next) => {
-  console.error(error); // Log del error para debugging
+  console.error(error); 
   if (error.name === "CastError") {
     return res.status(404).json({ message: "Recurso no encontrado" });
   }
