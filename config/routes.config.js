@@ -2,8 +2,11 @@ import express from "express";
 import posts from "../controllers/post.controller.js";
 import users from "../controllers/user.controller.js";
 import session from "../middlewares/session.middleware.js";
+import verify from "../middlewares/verify.middleware.js";
 
 const router = express.Router();
+
+router.use(verify.check);
 
 router.use("/posts", session.check);
 router.get("/posts", posts.getAll);

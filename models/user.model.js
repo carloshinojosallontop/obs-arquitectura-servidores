@@ -32,6 +32,18 @@ const userSchema = new mongoose.Schema(
     active: {
       type: Boolean,
       default: false,
+      index: true,
+    },
+    verificationTokenHash: {
+      type: String,
+      default: null,
+      select: false,
+    },
+    verificationTokenExpires: {
+      type: Date,
+      default: null,
+      select: false,
+      index: true,
     },
   },
   {
@@ -42,6 +54,8 @@ const userSchema = new mongoose.Schema(
         delete ret._id;
         delete ret.__v;
         delete ret.password;
+        delete ret.verificationTokenHash;
+        delete ret.verificationTokenExpires;
         return ret;
       },
     },
