@@ -7,7 +7,7 @@ import Session from "../models/session.model.js";
 // Controlador para crear usuarios, iniciar sesión y cerrar sesión
 const create = async (req, res) => {
 
-  const { name, email, password } = req.body || {};
+  const { name, email, password, bio } = req.body || {};
   if (!name || !email || !password) {
     throw new HttpError(400, "name, email y password son requeridos");
   }
