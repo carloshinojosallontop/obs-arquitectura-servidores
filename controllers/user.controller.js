@@ -6,7 +6,6 @@ import Session from "../models/session.model.js";
 
 // Controlador para crear usuarios, iniciar sesión y cerrar sesión
 const create = async (req, res) => {
-
   const { name, email, password, bio } = req.body || {};
   if (!name || !email || !password) {
     throw new HttpError(400, "name, email y password son requeridos");
@@ -16,21 +15,21 @@ const create = async (req, res) => {
   if (existingUser) throw new HttpError(400, "El correo ya está registrado");
 
   const passwordHash = await bcrypt.hash(password, 10);
-  // genera un token de verificación
-  const rawToken = crypto.randomBytes(32).toString("hex"); // Token sin procesar
-  // hashea el token y guarda su hash y expiración en el usuario
-  const verificationTokenHash = crypto
-    .createHash("sha256")
-    .update(rawToken)
-    .digest("hex");
-  // expira en 5 minutos
-  const verificationTokenExpires = new Date(Date.now() + 5 * 60 * 1000);
+
+  // Avatar del usuario
+  const avatar = req.file ? `/uploads/avatars/${req.file.filename}` : null;
+
+  // Token de verificación: hash + expiración
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const verificationTokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
+  const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 1000);
 
   const user = await User.create({
     name,
     email,
     password: passwordHash,
     bio,
+    avatar,
     active: false,
     verificationTokenHash,
     verificationTokenExpires,
@@ -76,7 +75,7 @@ const login = async (req, res) => {
   return res.status(200).json({ user: safeUser, session });
 };
 
-// Controlador para cerrar sesión
+// Controlador para cerrar sesión y eliminar la cookie
 const logout = async (req, res) => {
   const sessionId = req.cookies?.session;
   if (sessionId) await Session.findByIdAndDelete(sessionId);

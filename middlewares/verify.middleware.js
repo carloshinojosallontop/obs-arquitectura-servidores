@@ -2,11 +2,10 @@ import crypto from "crypto";
 import User from "../models/user.model.js";
 import HttpError from "../models/error.model.js";
 
-/**
- * Middleware de verificación de cuenta atado a /users
- * - Si llega un GET /api/users con query ?token=...&id=..., valida y activa la cuenta.
- * - En cualquier otro caso, deja pasar al siguiente handler.
- */
+
+// Middleware de verificación de cuenta atado a /users
+// - Si llega un GET /api/users con query ?token=...&id=..., valida y activa la cuenta.
+// - En cualquier otro caso, deja pasar al siguiente handler.
 const check = async (req, res, next) => {
   try {
     const isVerificationGet = req.method === "GET" && req.query?.token && req.query?.id;

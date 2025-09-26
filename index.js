@@ -13,6 +13,9 @@ const PORT = process.env.PORT || 8000;
 app.use(cookieParser());
 app.use(express.json());
 
+// archivo estático para servir imágenes subidas
+app.use("/uploads", express.static("uploads"));
+
 // Routes
 app.use("/api", router);
 
